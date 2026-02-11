@@ -1,0 +1,1 @@
+﻿{"builds":[{"src":"public/**","use":"@vercel/static"},{"src":"admin/productimages/**","use":"@vercel/static"}],"routes":[{"src":"/admin/productimages/(.*)","dest":"/admin/productimages/$1"},{"src":"/(.*)","dest":"/public/$1"}]}
