@@ -1,0 +1,22 @@
+time=2026-02-11T10:30:37+01:00
+remote_addr=::1
+session_id=2k3etqqie1hca49i2g4va9glmk
+session_uid=12
+post_keys=pid,inputQuantity,addtocart
+post_raw=pid=85&inputQuantity=5&addtocart=
+x_requested_with=NONE
+----
+2026-02-11T10:30:37+01:00 - COMPUTED: userid=12 pid=85 pqty=5
+2026-02-11T10:30:37+01:00 - SELECT ok: rows=0
+2026-02-11T10:30:37+01:00 - INSERT ok: user=12 pid=85 qty=5
+time=2026-02-11T10:30:49+01:00
+remote_addr=::1
+session_id=2k3etqqie1hca49i2g4va9glmk
+session_uid=12
+post_keys=qty,unit,pid,purpose,ajax_addtocart
+post_raw=
+x_requested_with=XMLHttpRequest
+----
+2026-02-11T10:30:49+01:00 - COMPUTED: userid=12 pid=84 pqty=5
+2026-02-11T10:30:49+01:00 - SELECT ok: rows=0
+2026-02-11T10:30:49+01:00 - INSERT ok: user=12 pid=84 qty=5

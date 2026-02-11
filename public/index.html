@@ -1,0 +1,635 @@
+﻿<!-- deployed snapshot -->
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+	
+
+	<!-- title -->
+	<title>GHP INVENTORY MANAGEMENT SYSTEM</title>
+
+	<!-- favicon -->
+	<link rel="shortcut icon" type="image/png" href="assets/img/favicon.png">
+	<!-- google font -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+	<!-- fontawesome -->
+	<link rel="stylesheet" href="assets/css/all.min.css">
+	<!-- bootstrap -->
+	<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+	<!-- owl carousel -->
+	<link rel="stylesheet" href="assets/css/owl.carousel.css">
+	<!-- magnific popup -->
+	<link rel="stylesheet" href="assets/css/magnific-popup.css">
+	<!-- animate css -->
+	<link rel="stylesheet" href="assets/css/animate.css">
+	<!-- mean menu css -->
+	<link rel="stylesheet" href="assets/css/meanmenu.min.css">
+	<!-- main style -->
+	<link rel="stylesheet" href="assets/css/main.css">
+	<!-- responsive -->
+	<link rel="stylesheet" href="assets/css/responsive.css">
+
+</head>
+<body>
+	
+	
+	
+	<!-- header -->
+    <div class="top-header-area" id="sticker">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 text-center">
+                    <div class="main-menu-wrap">
+                        <!-- logo (dynamic via site settings) -->
+                        <div class="site-logo">
+                            <a href="index.html">
+                                                                                                        <img src="assets/img/logo1.png" alt="">
+                                                            </a>
+                        </div>
+                        <!-- logo -->
+
+                        <!-- menu start -->
+                        <nav class="main-menu">
+                            <ul>
+                               
+                                <li class="current-list-item"><a href="index.html">Utama</a></li>
+                                <li><a href="about.php">Tentang</a></li>
+                             
+                              
+                                <li><a href="contact.php">Hubungi</a></li>
+                                <li><a href="shop.php">Inventori</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="shop.php">Semua</a></li>
+                                          
+                                        <li><a href="categorywise.php?cid=1">Bahan Mentah</a></li>  
+                                        <li><a href="categorywise.php?cid=2">Bahan Kering </a></li>  
+                                        <li><a href="categorywise.php?cid=5">Peralatan Tangan</a></li>  
+                                        <li><a href="categorywise.php?cid=6">Peralatan Elektrik</a></li>  
+                                        <li><a href="categorywise.php?cid=7">Peralatan Sokongan</a></li>                                      
+                                    </ul>
+                                </li>
+                                                                  <li style="color: white;font-weight: bolder;">Pengguna                                    <ul class="sub-menu">
+                                        <li><a href="login.php">Log Masuk</a></li>
+                                        <li><a href="registration.php">Registration</a></li>
+                                    </ul>
+                                </li>
+                                <li class="current-list-item"><a href="admin/index.html">Pentadbir</a></li>
+                                 
+                                <li>
+                                    <div class="header-icons">
+                                        <!-- language selector removed (Malay-only) -->
+                                        <span style="display:inline-block;margin-right:12px;font-weight:600;">Bahasa Melayu</span>
+                                                                                <a class="shopping-cart" href="my-cart.php"><i class="fas fa-shopping-cart"></i>                             <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                        </a>
+
+                                        <span id="notifWrapper" style="position:relative;display:inline-block;">
+                                            <a id="notifLink" class="mobile-hide search-bar-icon" href="my-wishlist.php" aria-label="Notifications"><i class="fas fa-bell"></i></a>
+                                            <span id="notifBadge" style="position:absolute;top:-6px;right:-6px;background:#dc3545;color:#fff;padding:2px 6px;border-radius:12px;font-size:12px;display:none">0</span>
+                                            <div id="notifDropdown" style="display:none;position:absolute;right:0;top:28px;min-width:260px;background:#fff;color:#333;border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,0.15);overflow:hidden;z-index:99999">
+                                                <div id="notifItems" style="max-height:320px;overflow:auto;padding:8px"></div>
+                                                <div style="text-align:center;border-top:1px solid #eee;padding:6px"><a href="my-wishlist.php">Lihat semua</a></div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </li>
+                                  
+                            </ul>
+                        </nav>
+                    
+                        <div class="mobile-menu"></div>
+                        <!-- menu end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end header -->
+    <style>
+    /* small notification pulse for public header */
+    #notifLink.pulse .fa-bell { animation: pulse 1.6s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); } }
+    </style>
+            <script>
+        // Polling for notifications and product quantity refresh (public)
+        (function(){
+            var lastId = 0;
+            var notifItemsEl = null;
+            var badgeEl = document.getElementById('notifBadge');
+            var notifLinkEl = document.getElementById('notifLink');
+
+            var I18N = {
+                PRODUCT_RESTOCKED: "Produk %s telah diisi semula: %s %s",
+                PRODUCT_CHECKOUT_USER: "Permintaan anda untuk %s %s produk %s telah direkodkan."
+            };
+            function i18nFormat(tpl) { for (var i=1;i<arguments.length;i++) tpl = tpl.replace('%s', arguments[i]); return tpl; }
+
+            // Format quantities for display: trim trailing zeros and unnecessary decimals
+            function formatQty(q) {
+                var num = parseFloat(q);
+                if (!isFinite(num)) return q;
+                if (Math.abs(Math.round(num) - num) < 1e-9) return String(Math.round(num));
+                var s = num.toFixed(4);
+                s = s.replace(/\.0+$/, '');
+                s = s.replace(/(\.\d*?)0+$/, '$1');
+                s = s.replace(/\.$/, '');
+                return s;
+            }
+
+            function makeEven(n) { n = parseInt(n)||0; return (n % 2 === 0) ? n : n + 1; }
+
+            function addNotifToDropdown(n) {
+                if (!notifItemsEl) notifItemsEl = document.getElementById('notifItems');
+                if (!notifItemsEl) return;
+                var el = document.createElement('div');
+                el.style.padding = '8px';
+                el.style.borderBottom = '1px solid #f1f1f1';
+                // Choose template based on action
+                if (n.action && n.action === 'restock') {
+                    el.textContent = i18nFormat(I18N.PRODUCT_RESTOCKED, n.productId, formatQty(n.qty), n.unit);
+                } else if (n.action && (n.action.indexOf('checkout') === 0)) {
+                    // For user notifications (single or cart), show an acknowledgement message
+                    el.textContent = i18nFormat(I18N.PRODUCT_CHECKOUT_USER, formatQty(n.qty), n.unit, n.productId);
+                    // async replace productId with product name if available
+                    fetch('/scripts/get_product_names.php?ids=' + encodeURIComponent(n.productId), { credentials: 'same-origin' })
+                        .then(r => r.json()).then(d => {
+                            if (d && d.ok && d.names && d.names[n.productId]) {
+                                el.textContent = i18nFormat(I18N.PRODUCT_CHECKOUT_USER, formatQty(n.qty), n.unit, d.names[n.productId]);
+                            }
+                        }).catch(()=>{});
+                } else {
+                    // fallback
+                    el.textContent = i18nFormat(I18N.PRODUCT_RESTOCKED, n.productId, formatQty(n.qty), n.unit);
+                }
+                notifItemsEl.insertBefore(el, notifItemsEl.firstChild);
+            }
+
+            // persistent unread count (per-browser). Use localStorage to survive reloads.
+            var storageKey = 'fvsms_unread_count';
+            var unreadCount = parseInt(localStorage.getItem(storageKey) || '0') || 0;
+            function setBadgeCount(c) {
+                unreadCount = makeEven(parseInt(c) || 0);
+                localStorage.setItem(storageKey, unreadCount);
+                if (!badgeEl) return;
+                if (unreadCount > 0) {
+                    badgeEl.style.display = 'inline-block';
+                    badgeEl.textContent = unreadCount;
+                    if (notifLinkEl) notifLinkEl.classList.add('pulse');
+                } else {
+                    badgeEl.style.display = 'none';
+                    badgeEl.textContent = '0';
+                    if (notifLinkEl) notifLinkEl.classList.remove('pulse');
+                }
+            }
+
+            // initialize badge
+            setBadgeCount(unreadCount);
+
+            function refreshProductQuantities(productIds) {
+                if (!productIds || productIds.length === 0) return;
+                var ids = productIds.join(',');
+                fetch('/scripts/get_product_qty.php?ids=' + encodeURIComponent(ids), { credentials: 'same-origin' })
+                    .then(function(res){ return res.json(); })
+                    .then(function(data){
+                        if (data && data.quantities) {
+                            Object.keys(data.quantities).forEach(function(id){
+                                var qty = parseFloat(data.quantities[id]);
+                                var els = document.querySelectorAll('[data-product-id="' + id + '"]');
+                                els.forEach(function(el){
+                                    // update textual display, assume element expects kg grams display
+                                    var grams = qty * 1000;
+                                    var display = '';
+                                    if (grams >= 1000 && grams % 1000 === 0) {
+                                        display = (grams / 1000) + ' kg';
+                                    } else {
+                                        display = Math.round(grams) + ' gram';
+                                    }
+                                    el.textContent = display;
+                                });
+                            });
+                        }
+                    }).catch(function(){/*ignore*/});
+            }
+
+            function poll() {
+                fetch('/scripts/notifications_poll.php?last_id=' + encodeURIComponent(lastId), { credentials: 'same-origin' })
+                    .then(function(res){ return res.json(); })
+                    .then(function(data){
+                        if (!data) return;
+                        // if server returned current_max only (first poll), seed lastId and don't display backlog
+                        if (data.current_max && (!data.notifications || data.notifications.length === 0) && lastId === 0) {
+                            lastId = parseInt(data.current_max || 0);
+                            return;
+                        }
+                        if (data && data.notifications && data.notifications.length) {
+                            var touched = {};
+                            for (var i=0;i<data.notifications.length;i++) {
+                                var n = data.notifications[i];
+                                lastId = Math.max(lastId, parseInt(n.id || 0));
+                                addNotifToDropdown(n);
+                                touched[n.productId] = true;
+                            }
+                            // increment unread and ensure displayed number is even
+                            setBadgeCount((parseInt(localStorage.getItem(storageKey) || '0') || 0) + data.notifications.length);
+                            // refresh quantities for touched products
+                            refreshProductQuantities(Object.keys(touched));
+                        } else if (data.current_max) {
+                            // keep in sync
+                            lastId = Math.max(lastId, parseInt(data.current_max || 0));
+                        }
+                    })
+                    .catch(function(err){ /* ignore */ })
+                    .finally(function(){ setTimeout(poll, 5000); });
+            }
+
+            // Toggle dropdown on click
+            var wrapper = document.getElementById('notifWrapper');
+            if (wrapper) {
+                wrapper.addEventListener('click', function(e){
+                    e.preventDefault();
+                    var dd = document.getElementById('notifDropdown');
+                    if (!dd) return;
+                    dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+                    // reset badge when opened and mark as seen (persist last seen = current_max)
+                    setBadgeCount(0);
+                    try { localStorage.setItem('fvsms_last_seen_max', lastId); } catch (ex) {}
+                });
+            }
+
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                setTimeout(poll, 1000);
+            } else {
+                document.addEventListener('DOMContentLoaded', function(){ setTimeout(poll, 1000); });
+            }
+        })();
+    </script>
+   
+
+	<!-- home page slider -->
+	<div class="homepage-slider">
+		<!-- single home slider -->
+		<div class="single-homepage-slider homepage-bg-1">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12 col-lg-7 offset-lg-1 offset-xl-0">
+						<div class="hero-text">
+							<div class="hero-text-tablecell">
+								<p class="subtitle">GHP INVENTORY</p>
+								<h1>SISTEM PENGURUSAN NOMBOR 1 ANDA!</h1>
+								<div class="hero-btns">
+									<a href="shop.php" class="boxed-btn">Sentiasa Sedia</a>
+									<a href="contact.php" class="bordered-btn">Hubungi Kami</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- single home slider -->
+		<div class="single-homepage-slider homepage-bg-2">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-10 offset-lg-1 text-center">
+						<div class="hero-text">
+							<div class="hero-text-tablecell">
+								<p class="subtitle">Sentiasa Sedia</p>
+								<h1>DIKEMAS KINI SETIAP HARI</h1>
+								<div class="hero-btns">
+							<a href="shop.php" class="boxed-btn">Sentiasa Sedia</a>
+									<a href="contact.php" class="bordered-btn">Hubungi Kami</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- single home slider -->
+		<div class="single-homepage-slider homepage-bg-3">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-10 offset-lg-1 text-right">
+						<div class="hero-text">
+							<div class="hero-text-tablecell">
+								<p class="subtitle">Urus Barangan Anda Dengan Mudah</p>
+								<h1>SISTEM INVENTORI GHP</h1>
+								<div class="hero-btns">
+									<a href="shop.php" class="boxed-btn">Sentiasa Sedia</a>
+									<a href="contact.php" class="bordered-btn">Hubungi Kami</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end home page slider -->
+
+	<script>
+	// Ensure homepage hero buttons are shown in site language (in-case some slides were left in static text)
+	document.addEventListener('DOMContentLoaded', function(){
+	    var contactLabel = "Hubungi Kami";
+	    var primaryLabel = "Sentiasa Sedia";
+	    document.querySelectorAll('.bordered-btn').forEach(function(el){
+	        if(el.textContent.trim() === 'Contact Us') el.textContent = contactLabel;
+	    });
+	    document.querySelectorAll('.boxed-btn').forEach(function(el){
+	        if(el.textContent.trim() === 'Visit Inventory') el.textContent = primaryLabel;
+	    });
+	});
+	</script>
+
+	<!-- features list section -->
+	<div class="list-section pt-80 pb-80">
+		<div class="container">
+
+			<div class="row">
+				<div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+					<div class="list-box d-flex align-items-center">
+						<div class="list-icon">
+							<i class="fas fa-shipping-fast"></i>
+						</div>
+						<div class="content">
+							<h3>Pantas dan boleh dipercayai</h3>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+					<div class="list-box d-flex align-items-center">
+						<div class="list-icon">
+							<i class="fas fa-phone-volume"></i>
+						</div>
+						<div class="content">
+							<h3>Sokongan 24/7</h3>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-6">
+					<div class="list-box d-flex justify-content-start align-items-center">
+						<div class="list-icon">
+							<i class="fas fa-sync"></i>
+						</div>
+						<div class="content">
+							<h3>Boleh dipercayai</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- end features list section -->
+
+	<!-- product section -->
+	<div id="product-list" class="product-section mt-150 mb-150">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="section-title">	
+						<h3><span class="orange-text">Produk</span> Kami</h3>
+						<p>Dapatkan keperluan bahan mentah anda dengan mudah menggunakan sistem kami, sistem ini merekodkan penggunaan bahan mentah serta ketersediaan bahan mentah secara tepat.</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+			                  <div class="col-lg-4 col-md-6 text-center strawberry">
+                    <div class="single-product-item">
+                        <div class="product-image">
+                            <a href="product-details.php?pid=85">
+                                <img src="admin/productimages/01ca3bbec56971c693d7a53430dd8a90webp" alt="" width="300" height="300">
+                            </a>
+                        </div>
+                        <h3>Nanas</h3>
+
+													<p style="margin-top: 18px; text-align: center; font-weight:600; color:#333; font-size:14px;">55 kg tersedia</p>
+						                    </div>
+                </div>
+                                <div class="col-lg-4 col-md-6 text-center strawberry">
+                    <div class="single-product-item">
+                        <div class="product-image">
+                            <a href="product-details.php?pid=84">
+                                <img src="admin/productimages/920435d7a5b3406a146ea54e356c743f.jpg" alt="" width="300" height="300">
+                            </a>
+                        </div>
+                        <h3>Anggur</h3>
+
+													<p style="margin-top: 18px; text-align: center; font-weight:600; color:#333; font-size:14px;">40 kg tersedia</p>
+						                    </div>
+                </div>
+                                <div class="col-lg-4 col-md-6 text-center strawberry">
+                    <div class="single-product-item">
+                        <div class="product-image">
+                            <a href="product-details.php?pid=83">
+                                <img src="admin/productimages/0f20cbf94abd235dc5a59ac0435292b0.jpg" alt="" width="300" height="300">
+                            </a>
+                        </div>
+                        <h3>Apel</h3>
+
+													<p style="margin-top: 18px; text-align: center; font-weight:600; color:#333; font-size:14px;">55 kg tersedia</p>
+						                    </div>
+                </div>
+                                <div class="col-lg-4 col-md-6 text-center strawberry">
+                    <div class="single-product-item">
+                        <div class="product-image">
+                            <a href="product-details.php?pid=82">
+                                <img src="admin/productimages/7f7c41b2c673295ccc68a1b5431b10d6.jpg" alt="" width="300" height="300">
+                            </a>
+                        </div>
+                        <h3>Mangga</h3>
+
+													<p style="margin-top: 18px; text-align: center; font-weight:600; color:#333; font-size:14px;">10 kg tersedia</p>
+						                    </div>
+                </div>
+                                <div class="col-lg-4 col-md-6 text-center strawberry">
+                    <div class="single-product-item">
+                        <div class="product-image">
+                            <a href="product-details.php?pid=81">
+                                <img src="admin/productimages/78fada5a25fe7de84987329ea2705367.png" alt="" width="300" height="300">
+                            </a>
+                        </div>
+                        <h3>Bawang Holland</h3>
+
+													<p style="margin-top: 18px; text-align: center; font-weight:600; color:#333; font-size:14px;">10 kg tersedia</p>
+						                    </div>
+                </div>
+                                <div class="col-lg-4 col-md-6 text-center strawberry">
+                    <div class="single-product-item">
+                        <div class="product-image">
+                            <a href="product-details.php?pid=80">
+                                <img src="admin/productimages/6fc604a4f2015532eba7b3c97e77b9ebwebp" alt="" width="300" height="300">
+                            </a>
+                        </div>
+                        <h3>Penimbang Digital</h3>
+
+													<p style="margin-top: 18px; text-align: center; font-weight:600; color:#333; font-size:14px;">6 pcs tersedia</p>
+						                    </div>
+                </div>
+                            </div>
+				
+				
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="pagination-wrap">
+                        <ul>
+                            <li class='page-item disabled'>
+                                <a  class="page-link">Sebelumnya</a>
+                            </li>
+                            <li class='page-link active'><a>1</a></li><li><a href='?page_no=2#product-list' class='page-link'>2</a></li><li><a href='?page_no=3#product-list' class='page-link'>3</a></li><li><a href='?page_no=4#product-list' class='page-link'>4</a></li><li><a href='?page_no=5#product-list' class='page-link'>5</a></li><li><a href='?page_no=6#product-list' class='page-link'>6</a></li><li><a href='?page_no=7#product-list' class='page-link'>7</a></li><li class='page-item'><a class='page-link'>...</a></li><li><a href='?page_no=10#product-list' class='page-link'>10</a></li><li><a href='?page_no=11#product-list' class='page-link'>11</a></li>                            <li >
+                                <a href='?page_no=2#product-list' class="page-link">Seterusnya</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+			</div>
+		</div>
+	</div>
+	<!-- end product section -->
+
+	
+    <!-- copyright -->
+    <div class="copyright">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+                    <p>GHP INVENTORY MANAGEMENT SYSTEM
+                    </p>
+                </div>
+                <div class="col-lg-6 text-right col-md-12">
+                    <div class="social-icons">
+                        <ul>
+                            <li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                            <li><a href="#" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+                            <li><a href="#" target="_blank"><i class="fab fa-dribbble"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end copyright -->
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function(){
+        var contactLabel = "Hubungi Kami";
+        var primaryLabel = "Sentiasa Sedia";
+        var aboutLabel = "Tentang Kami";
+        var cartLabel = "Troli";
+
+        document.querySelectorAll('a.bordered-btn').forEach(function(el){
+            if(el.textContent.trim() === 'Contact Us' || el.textContent.trim() === 'Contact us') el.textContent = contactLabel;
+        });
+        document.querySelectorAll('a.boxed-btn').forEach(function(el){
+            if(el.textContent.trim() === 'Visit Inventory') el.textContent = primaryLabel;
+        });
+
+        document.querySelectorAll('.breadcrumb-text h1').forEach(function(el){
+            var t = el.textContent.trim();
+            if(t === 'Cart') el.textContent = cartLabel;
+            if(t === 'About Us' || t === 'About us') el.textContent = aboutLabel;
+        });
+
+        var textReplacements = {
+            'Checkout History': "Sejarah Pengeluaran",
+            'No checkout history found.': "Tiada sejarah pengeluaran dijumpai",
+            'Contact us': "Hubungi",
+            'Contact Us': "Hubungi"
+        };
+        Object.keys(textReplacements).forEach(function(k){
+            document.querySelectorAll('td,th,h1,h2,h3,h4,p,span,a').forEach(function(n){
+                if(n.textContent.trim() === k) n.textContent = textReplacements[k];
+            });
+        });
+    });
+    </script>
+
+    <!-- Enhanced checkout submit handler (global) -->
+    <script>
+    (function(){
+        window.enhancedCheckoutSubmit = function(f, e){
+            if (e && e.stopImmediatePropagation) e.stopImmediatePropagation();
+            if (e && e.preventDefault) e.preventDefault();
+            try {
+                var submitBtn = f.querySelector('#checkoutSubmit') || f.querySelector('button[type=submit]');
+                var statusEl = document.getElementById('checkoutStatus');
+                if (statusEl) { statusEl.classList.remove('d-none'); statusEl.classList.remove('alert-danger','alert-success','alert-warning'); statusEl.classList.add('alert-info'); statusEl.textContent = 'Menghantar pesanan...'; }
+                if (submitBtn) submitBtn.disabled = true;
+                var fd = new FormData(f);
+                if (!fd.has('client_ts')) fd.append('client_ts', Date.now());
+                var didRespond = false;
+                var timeoutMs = 10000;
+                var timer = setTimeout(function(){
+                    if (!didRespond) {
+                        if (statusEl) { statusEl.classList.remove('alert-info'); statusEl.classList.add('alert-warning'); statusEl.textContent = 'Tiada respons daripada pelayan. Menghantar secara biasa...'; }
+                        try { f.submit(); } catch(e){ console.error('fallback submit failed', e); alert('Gagal menghantar - sila cuba lagi.'); if (submitBtn) submitBtn.disabled = false; }
+                    }
+                }, timeoutMs);
+
+                fetch(f.action, { method: 'POST', body: fd, credentials: 'same-origin' })
+                .then(function(r){ didRespond = true; clearTimeout(timer); return r.text(); })
+                .then(function(txt){
+                    console.log('enhanced checkout response:', txt);
+                    if (statusEl) { statusEl.classList.remove('alert-info','alert-warning'); }
+                    try {
+                        var jsn = null;
+                        if (txt.trim().startsWith('{') || txt.trim().startsWith('[')) jsn = JSON.parse(txt);
+                        if (jsn && jsn.success) {
+                            if (statusEl) { statusEl.classList.add('alert-success'); statusEl.textContent = jsn.message || 'Pesanan direkodkan.'; }
+                            var ord = jsn.orderNumber || '';
+                            alert(jsn.message || 'Pesanan anda berjaya dibuat' + (ord ? '. Nombor pesanan: ' + ord : ''));
+                            window.location = '/my-orders.php';
+                            return;
+                        }
+                    } catch(ex) { console.warn('enhancedCheckout: JSON parse failed', ex); }
+
+                    if (txt.indexOf('Pesanan anda berjaya dibuat') !== -1) {
+                        if (statusEl) { statusEl.classList.add('alert-success'); statusEl.textContent = 'Pesanan anda berjaya dibuat'; }
+                        var m = txt.match(/(\d{6,})/);
+                        var ord = m ? m[1] : '';
+                        alert('Pesanan anda berjaya dibuat' + (ord ? ('. Nombor pesanan: ' + ord) : ''));
+                        window.location = '/my-orders.php';
+                        return;
+                    }
+
+                    var mm = txt.match(/alert\((?:"([^\"]+)"|'([^']+)')\)/i);
+                    if (mm) { var msg = mm[1] || mm[2]; if (statusEl) { statusEl.classList.add('alert-success'); statusEl.textContent = msg; } alert(msg); if (msg.indexOf('Pesanan anda berjaya dibuat') !== -1){ window.location = '/my-orders.php'; } return; }
+
+                    var stripped = txt.replace(/<[^>]+>/g,'').trim();
+                    if (stripped.length) { if (statusEl) { statusEl.classList.add('alert-danger'); statusEl.textContent = stripped; } alert(stripped); }
+                    else { if (statusEl) { statusEl.classList.add('alert-danger'); statusEl.textContent = 'Ralat semasa semak keluar. Sila semak Console (F12) untuk maklumat lanjut.'; } alert('Ralat semasa semak keluar. Sila semak Console (F12) untuk maklumat lanjut.'); console.error('enhanced checkout response empty'); }
+                })
+                .catch(function(err){ clearTimeout(timer); console.error('enhanced checkout fetch error', err); if (statusEl) { statusEl.classList.remove('alert-info'); statusEl.classList.add('alert-danger'); statusEl.textContent = 'Ralat sambungan ke pelayan: ' + (err.message || err); } alert('Ralat sambungan ke pelayan: ' + (err.message || err)); })
+                .finally(function(){ if (submitBtn) submitBtn.disabled = false; if (statusEl) { setTimeout(function(){ statusEl.classList.add('d-none'); }, 3000); } });
+            } catch(e) { console.error('enhancedCheckout exception', e); alert('Ralat dalaman. Sila cuba lagi.'); return false; }
+            return false;
+        };
+    })();
+    </script>	
+	<!-- jquery -->
+	<script src="assets/js/jquery-1.11.3.min.js"></script>
+	<!-- bootstrap -->
+	<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+	<!-- count down -->
+	<script src="assets/js/jquery.countdown.js"></script>
+	<!-- isotope -->
+	<script src="assets/js/jquery.isotope-3.0.6.min.js"></script>
+	<!-- waypoints -->
+	<script src="assets/js/waypoints.js"></script>
+	<!-- owl carousel -->
+	<script src="assets/js/owl.carousel.min.js"></script>
+	<!-- magnific popup -->
+	<script src="assets/js/jquery.magnific-popup.min.js"></script>
+	<!-- mean menu -->
+	<script src="assets/js/jquery.meanmenu.min.js"></script>
+	<!-- sticker js -->
+	<script src="assets/js/sticker.js"></script>
+	<!-- main js -->
+	<script src="assets/js/main.js"></script>
+
+</body>
+</html>
+

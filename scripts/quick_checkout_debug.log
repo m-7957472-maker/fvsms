@@ -1,0 +1,23 @@
+time=2026-02-11T10:31:00+01:00
+session_id=2k3etqqie1hca49i2g4va9glmk
+session_uid=12
+request_method=POST
+post_keys=modal_checkout,purpose,client_ts
+raw_input=
+headers={"Host":"localhost","Connection":"keep-alive","Content-Length":"354","sec-ch-ua-platform":"\"Windows\"","User-Agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/144.0.0.0 Safari\/537.36","sec-ch-ua":"\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"","Content-Type":"multipart\/form-data; boundary=----WebKitFormBoundary30wvUoJvl2uwM0Fl","sec-ch-ua-mobile":"?0","Accept":"*\/*","Origin":"http:\/\/localhost","Sec-Fetch-Site":"same-origin","Sec-Fetch-Mode":"cors","Sec-Fetch-Dest":"empty","Referer":"http:\/\/localhost\/fvsms\/my-cart.php","Accept-Encoding":"gzip, deflate, br, zstd","Accept-Language":"en-US,en;q=0.9","Cookie":"PHPSESSID=2k3etqqie1hca49i2g4va9glmk"}
+cart_count=2
+cart_items=[{"id":"54","productId":"85","productQty":"5","userId":"12"},{"id":"55","productId":"84","productQty":"5","userId":"12"}]
+last_db_error=
+----
+2026-02-11T10:31:00+01:00 - ORDER COMPLETED: 369666902 by uid=12
+time=2026-02-11T10:31:00+01:00
+session_id=2k3etqqie1hca49i2g4va9glmk
+session_uid=12
+request_method=POST
+post_keys=modal_checkout,purpose,client_ts
+raw_input=
+headers={"Host":"localhost","Connection":"keep-alive","Content-Length":"354","sec-ch-ua-platform":"\"Windows\"","User-Agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/144.0.0.0 Safari\/537.36","sec-ch-ua":"\"Not(A:Brand\";v=\"8\", \"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\"","Content-Type":"multipart\/form-data; boundary=----WebKitFormBoundaryZ7TQEXToAFVobBXp","sec-ch-ua-mobile":"?0","Accept":"*\/*","Origin":"http:\/\/localhost","Sec-Fetch-Site":"same-origin","Sec-Fetch-Mode":"cors","Sec-Fetch-Dest":"empty","Referer":"http:\/\/localhost\/fvsms\/my-cart.php","Accept-Encoding":"gzip, deflate, br, zstd","Accept-Language":"en-US,en;q=0.9","Cookie":"PHPSESSID=2k3etqqie1hca49i2g4va9glmk"}
+cart_count=0
+cart_items=[]
+last_db_error=
+----
